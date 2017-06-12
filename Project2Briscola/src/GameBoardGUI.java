@@ -42,7 +42,7 @@ public class GameBoardGUI extends JFrame implements ActionListener
 	static JButton cleanTableButton= new JButton("Clean");
 	static JButton showResultButton= new JButton("showResult");
 	static JLabel playerScore= new JLabel("Player: 0");
-	static JLabel opponentScore= new JLabel("Opponent: 0");
+	static JLabel opponentScore= new JLabel("AI: 0");
 	static ArrayList<JButton> visualCards= new ArrayList<JButton>();
 	static boolean enableCards= false, enableTrumpChange= true, enableChangeHand=true;
 	static String displaycard;

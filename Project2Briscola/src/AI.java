@@ -8,7 +8,9 @@ public class AI {
     
     public AI(ArrayList<Card> hand, Card tablecard, String trumpcard)
     {
-        this.hand = hand;
+    	ArrayList<Card> temphand = new ArrayList<Card>();
+    	for(int i=0;i<3;i++) temphand.add(hand.get(i));
+        this.hand = temphand;
         this.tablecard = tablecard;
         this.trumpcard = trumpcard;
     }
@@ -34,20 +36,29 @@ public class AI {
         }
         else
         {
-            Card chosenCard = hand.get(0);
+        	Card chosenCard = hand.get(0);
+            boolean loop = true;
+            while(loop) {
+            chosenCard = hand.get(0);
+            int count=0;
             try
             {
                 if(!(this.comparegreater(chosenCard,hand.get(1)).equals(chosenCard)))
                 {
+                	count = 1;
                     chosenCard = hand.get(1);
                 }
                 if(!(this.comparegreater(chosenCard,hand.get(2)).equals(chosenCard)))
                 {
+                	count=2;
                     chosenCard = hand.get(2);
                 }
+                
             }
             catch(Exception E){};
-            
+            if(this.cardWinner(tablecard,chosenCard).equals(chosenCard)) loop = false;
+            else { if (hand.size() == 1) loop = false; else hand.remove(count); }
+            }
             return chosenCard;
         }        
     }
@@ -95,9 +106,38 @@ public class AI {
         if(number==1) number = 14;
         if(number==3) number = 13;
         number= number*(A*club+B*sword+C*coin+D*cup);
-        System.out.println(number);
+        System.out.println("Winner is: "+Integer.toString(number));
         return number;
-    }    
+    }
+    
+    public Card cardWinner(Card c1, Card c2)
+	{
+		if(c1.getCardSuit().equals(trumpcard) && !(c2.getCardSuit().equals(trumpcard)))
+		{
+			return c1;
+		}
+		else if(c2.getCardSuit().equals(trumpcard) && !(c1.getCardSuit().equals(trumpcard)))
+		{
+			return c2;
+		}
+		else if(!(c1.getCardSuit().equals(c2.getCardSuit())))
+		{
+			return c1;
+		}
+		else
+		{
+			if(c1.isGreaterThan(c2))
+			{
+				return c1;
+			}
+			else
+			{
+				return c2;
+			}
+			
+		}
+		
+	}
  
 }
  

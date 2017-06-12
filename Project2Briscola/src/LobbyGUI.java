@@ -138,31 +138,18 @@ import javax.swing.JPanel;
 				public void actionPerformed(ActionEvent arg0) {
 					// TODO Auto-generated method stub
 					boolean[] settings = new boolean[2];
-					settings[0] = false;
-					settings[1] = false;
+					settings[0] = true;
+					settings[1] = true;
 					new GameBoardGUI(settings);
 					
 				}
 	        	
 	        });
 	        
-	        //chatboxLB.setBounds(50,450,450,215);
-	        
-	        //playerlist= new PlayerList(400,215);
-	        //playerlist.setBounds(500,450,450,215);
-	        //String[] test= {"Player1", "Player2", "Player3", "Player4"};
-	        //playerlist.addData(test);
-	        
-	        //gamelist= new GameList(400,300);
-	        //gamelist.setBounds(500,100,450,300);
-	        //String[] test2= {"Game1", "Game2", "Game3", "Game4"};
-	        //gamelist.addData(test2);
 	        
 	    
 	        TopLeftPanel.add(PlayerInfoL);
-	        
-	        
-	        
+	       	        
 	        
 	        //Adding Components to Lower Panel
 	        BottomLeftPanel.add(startGameLabel);

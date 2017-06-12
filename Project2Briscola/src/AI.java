@@ -15,7 +15,7 @@ public class AI {
     
     public Card playcard()
     {
-        if(tablecard.getCardSuit().equals("None"))
+        if(tablecard == null)
         {
             Card chosenCard = hand.get(0);
             try
@@ -79,10 +79,13 @@ public class AI {
         if(trumpcard.equals("sword")) sword = 10;
         if(trumpcard.equals("coin")) coin = 10;
         if(trumpcard.equals("cup")) cup = 10;
-        if(tablecard.getCardSuit().equals("club")) club = 100;
-        if(tablecard.getCardSuit().equals("sword")) sword = 100;
-        if(tablecard.getCardSuit().equals("coin")) coin = 100;
-        if(tablecard.getCardSuit().equals("cup")) cup = 100;
+        if(tablecard != null)
+        {
+        	if(tablecard.getCardSuit().equals("club")) club = 100;
+        	if(tablecard.getCardSuit().equals("sword")) sword = 100;
+        	if(tablecard.getCardSuit().equals("coin")) coin = 100;
+        	if(tablecard.getCardSuit().equals("cup")) cup = 100;
+        }
         if(suit.equals("club"))A=1;
         if(suit.equals("sword"))B=1;
         if(suit.equals("coin"))C=1;
@@ -92,6 +95,7 @@ public class AI {
         if(number==1) number = 14;
         if(number==3) number = 13;
         number= number*(A*club+B*sword+C*coin+D*cup);
+        System.out.println(number);
         return number;
     }    
  

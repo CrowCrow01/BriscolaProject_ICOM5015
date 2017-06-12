@@ -38,22 +38,25 @@ public class GameBoardGUI extends JFrame implements ActionListener
 	static JButton startGame= new JButton("Start Game!");
 	static JButton changeTrumpCard;
 	static JButton changeHand;
+	static JButton nextTurn = new JButton("Next Turn");
 	static JButton cleanTableButton= new JButton("Clean");
 	static JButton showResultButton= new JButton("showResult");
 	static JLabel playerScore= new JLabel("Player: 0");
 	static JLabel opponentScore= new JLabel("Opponent: 0");
 	static ArrayList<JButton> visualCards= new ArrayList<JButton>();
-	static boolean enableCards= true, enableTrumpChange= false, enableChangeHand=false;
+	static boolean enableCards= false, enableTrumpChange= true, enableChangeHand=true;
 	static String displaycard;
 	static int resultOptions=0;
 	
 	private AnimationPanel animationPanel;
 	private AnimationPanel3 animationPanel3;
 	private boolean[] settings;
-	private Timer tm= new Timer(10,this);
+	private Timer tm= new Timer(10,this),ta = new Timer(3000,null);
 	private int xPos= 364, yPos=340, yPos3=112, playerAnimation;
 	private boolean flag= true, flag3= true, resultflag=true;
 	private int swapCardPos=2;
+	private String turnresult;
+	protected Game game;
 	
 	/**
 	 * Main Constructor of the class, initializes the class frame.
@@ -150,10 +153,15 @@ public class GameBoardGUI extends JFrame implements ActionListener
         visualCards.get(6).setBounds(2,2,72,108);
         this.add(visualCards.get(6));
         
+        nextTurn.setBounds(600,400,100,20);
+        nextTurn.setSize(100,20);
+        this.add(nextTurn);
+        
         
         //More buttons...
         startGame.setBounds(400,200,100,20);
         startGame.setSize(100,20);
+      
         
         changeTrumpCard.setBounds(400,220,100,20);
         changeTrumpCard.setSize(100,20);
@@ -174,10 +182,12 @@ public class GameBoardGUI extends JFrame implements ActionListener
         playerScore.setBounds(680, 2, 100, 30);
         playerScore.setSize(100,30);
         playerScore.setFont(new Font("Rockwell", Font.BOLD, 16));
+        this.add(playerScore);
             
         opponentScore.setBounds(680, 35, 120, 30);
         opponentScore.setSize(120,30);
         opponentScore.setFont(new Font("Rockwell", Font.BOLD, 16));
+        this.add(opponentScore);
         
         
         //Adding all the Components 
@@ -201,9 +211,11 @@ public class GameBoardGUI extends JFrame implements ActionListener
 				if(enableCards) 
 				{
 					swapCardPos=0;
-					southPlayer.doClick();
-					//enableCards = false;
-					
+					game.playCard("Player", 0);
+					moveSouthCard();
+					enableCards = false;
+					enableChangeHand=false;
+					runGame();
 				}				
 			}
     		
@@ -218,9 +230,11 @@ public class GameBoardGUI extends JFrame implements ActionListener
 				if(enableCards) 
 				{
 					swapCardPos=1;
-					southPlayer.doClick();
-					//enableCards=false;
-					
+					game.playCard("Player",1);
+					moveSouthCard();
+					enableCards=false;
+					enableChangeHand = false;
+					runGame();
 				}			
 			}
     		
@@ -235,64 +249,15 @@ public class GameBoardGUI extends JFrame implements ActionListener
 				if(enableCards) 
 				{
 					swapCardPos=2;
-					southPlayer.doClick();
-					//enableCards=false;
+					game.playCard("Player", 2);
+					moveSouthCard();
+					enableCards=false;
+					enableChangeHand = false;
+					runGame();
 				}			
 			}
     		
     	});
-        
-      
-        southPlayer.addActionListener(new ActionListener()
-        {
-        	
-			@Override
-			public void actionPerformed(ActionEvent arg0){	
-			
-				yPos=340;
-				playerAnimation=1;
-				if(flag==true) flag=false;
-				else remove(animationPanel);
-				animationPanel= new AnimationPanel(visualCards.get(swapCardPos).getIcon().toString());
-				animationPanel.setBounds(0,0,800,600);
-				add(animationPanel);
-				animateCardS(visualCards.get(swapCardPos).getIcon().toString());
-				if(swapCardPos==0)
-				{
-					visualCards.get(0).setIcon(visualCards.get(1).getIcon());
-					visualCards.get(1).setIcon(visualCards.get(2).getIcon());
-				}
-				else if(swapCardPos==1)
-				{
-					visualCards.get(1).setIcon(visualCards.get(2).getIcon());
-				}
-				visualCards.get(2).setIcon(getCardIcon("nocard0"));
-				tm.start();
-  		        
-			}
-        	
-        });
-        
-        
-        
-        northPlayer.addActionListener(new ActionListener()
-        {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				yPos3= 112;
-				playerAnimation=3;
-				if(flag3==true) flag3=false;
-				else remove(animationPanel3);
-				animationPanel3= new AnimationPanel3(displaycard+".jpg");
-				animationPanel3.setBounds(0,0,800,600);
-				add(animationPanel3);
-				visualCards.get(8).setIcon(getCardIcon("nocard0"));
-				tm.start();
-			}
-        	
-        });
         
         
         startGame.addActionListener(new ActionListener()
@@ -301,13 +266,27 @@ public class GameBoardGUI extends JFrame implements ActionListener
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
-				Game G = new Game(LobbyGUI.P1);
-				G.startGame("Player");
-				
-			}
-        	
+				game = new Game(LobbyGUI.P1);
+				game.startGame("Player");
+				String[] newcards = game.getCardNames("Player");
+				for(int i=0;i<3;i++)
+				{
+					visualCards.get(i).setIcon(getCardIcon(newcards[i]));
+				}
+				visualCards.get(6).setIcon(getCardIcon(game.getTrumpCard()));
+				runGame();
+			}        	
         });
         
+        nextTurn.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				runGame();
+			}});
+        
+    
         cleanTableButton.addActionListener(new ActionListener()
         {
 
@@ -360,7 +339,13 @@ public class GameBoardGUI extends JFrame implements ActionListener
 				// TODO Auto-generated method stub
 				if(enableTrumpChange)
 				{
-					
+					System.out.println(game.changeTrumpCard("Player"));
+					String[] newcards = game.getCardNames("Player");
+					for(int i=0;i<3;i++)
+					{
+						visualCards.get(i).setIcon(getCardIcon(newcards[i]));
+					}
+					visualCards.get(6).setIcon(getCardIcon(game.getTrumpCard()));
 				}
 			}
         	
@@ -374,6 +359,12 @@ public class GameBoardGUI extends JFrame implements ActionListener
 				// TODO Auto-generated method stub
 				if(enableChangeHand)
 				{
+					System.out.println(game.changeHand("Player"));
+					String[] newcards = game.getCardNames("Player");
+					for(int i=0;i<3;i++)
+					{
+						visualCards.get(i).setIcon(getCardIcon(newcards[i]));
+					}
 					
 				}
 			}
@@ -401,13 +392,98 @@ public class GameBoardGUI extends JFrame implements ActionListener
         
 	}
 	
+	protected void runGame() {
+		turnresult = game.getTurn();
+		while(!(turnresult.substring(0,3).equals("Win")))
+		{
+			if(turnresult.equals("Turn0"))
+			{
+				enableCards=true;
+				break;
+			}
+			else if(turnresult.equals("Turn1"))
+			{
+				int cardindex = game.AIplay();
+				displaycard= game.playCard("AI",cardindex);
+				moveNorthCard();
+				ta.addActionListener(new ActionListener(){
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+						runGame();
+						ta.stop();
+					}});
+				ta.start();
+				break;
+				
+			}
+			else
+			{
+				cleanTableButton.doClick();
+				playerScore.setText("Player: "+Integer.toString(game.getBench1Points()));
+				opponentScore.setText("AI: "+Integer.toString(game.getBench2Points()));
+			}
+			String[] newcards = game.getCardNames("Player");
+			for(int i=0;i<3;i++)
+			{
+				visualCards.get(i).setIcon(getCardIcon(newcards[i]));
+			}
+			newcards = game.getCardNames("AI");
+			for(int i=3;i<6;i++)
+			{
+				visualCards.get(i).setIcon(getCardIcon(newcards[i-3]));
+			}
+			turnresult = game.getTurn();
+		}
+		System.out.println(turnresult);
+		
+	}
+	
+	public void moveSouthCard()
+	{			
+		yPos=300;
+		playerAnimation=1;
+		if(flag==true) flag=false;
+		else remove(animationPanel);
+		animationPanel= new AnimationPanel(visualCards.get(swapCardPos).getIcon().toString());
+		animationPanel.setBounds(0,0,800,600);
+		add(animationPanel);
+		animateCardS(visualCards.get(swapCardPos).getIcon().toString());
+		if(swapCardPos==0)
+		{
+			visualCards.get(0).setIcon(visualCards.get(1).getIcon());
+			visualCards.get(1).setIcon(visualCards.get(2).getIcon());
+		}
+		else if(swapCardPos==1)
+		{
+			visualCards.get(1).setIcon(visualCards.get(2).getIcon());
+		}
+		visualCards.get(2).setIcon(getCardIcon("nocard0"));
+		tm.start();
+	        
+	}
+	
+	public void moveNorthCard() {
+		// TODO Auto-generated method stub
+		yPos3= 112;
+		playerAnimation=3;
+		if(flag3==true) flag3=false;
+		else remove(animationPanel3);
+		animationPanel3= new AnimationPanel3(displaycard+".jpg");
+		animationPanel3.setBounds(0,0,800,600);
+		add(animationPanel3);
+		animateCardN(displaycard+".jpg");
+		tm.start();
+	}
+	
 	/**
 	 * Contains parameters from the card played by the player from the south part of the screen.
 	 * @param cardname The name of the card.
 	 */
 	public void animateCardS(String cardname)
 	{
-		yPos=340;
+		yPos=300;
 		playerAnimation=1;
 		if(flag==true) flag=false;
 		else remove(animationPanel);
@@ -430,7 +506,7 @@ public class GameBoardGUI extends JFrame implements ActionListener
 		animationPanel3= new AnimationPanel3(cardname);
 		animationPanel3.setBounds(0,0,800,600);
 		add(animationPanel3);
-		visualCards.get(4).setIcon(getCardIcon("nocard0"));
+		//visualCards.get(3).setIcon(getCardIcon("nocard0"));
 		tm.start();
 	}
 	
@@ -561,7 +637,6 @@ public class GameBoardGUI extends JFrame implements ActionListener
 			else 
 			{
 				tm.stop();
-				
 			}
 			
 		}
@@ -574,8 +649,8 @@ public class GameBoardGUI extends JFrame implements ActionListener
 			}
 			else 
 			{
+
 				tm.stop();
-				
 			}
 		}
 		

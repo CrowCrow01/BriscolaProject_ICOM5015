@@ -52,7 +52,7 @@ public class Game
 	 */
 	public String getTurn()
 	{
-		
+		//System.out.println(getBench1Points()+getBench2Points());
 		if(getBench1Points()+getBench2Points()==120)
 		{
 			return getWinners(); 
@@ -62,20 +62,25 @@ public class Game
 			System.out.println("dealing cards...");
 			inspectTable();
 			dealCards();
-			GameBoardGUI.setCardIcon(2, PlayersHand.get(2).getCardSuit()+Integer.toString(PlayersHand.get(2).getCardNumber()));
-			GameBoardGUI.setCardIcon(5, AIsHand.get(2).getCardSuit()+Integer.toString(AIsHand.get(5).getCardNumber()));
+			try
+			{
+				GameBoardGUI.setCardIcon(2, PlayersHand.get(2).getCardSuit()+Integer.toString(PlayersHand.get(2).getCardNumber()));
+			}catch(Exception e){};	
+			//GameBoardGUI.setCardIcon(5, AIsHand.get(2).getCardSuit()+Integer.toString(AIsHand.get(5).getCardNumber()));
 			if(roundcounter<=14)
 			{
-				return Integer.toString(roundcounter);
+				if(actualTurn==0) return "Player won round "+ Integer.toString(roundcounter);
+				else return "AI won round " + Integer.toString(roundcounter);
 			}
 			else
 			{
-				return "Final Turns" + Integer.toString(roundcounter);
+				if(actualTurn==0) return "Player won round "+ Integer.toString(roundcounter) + " (Final Rounds)";
+				else return "AI won round " + Integer.toString(roundcounter) + " (Final Rounds)";
 			}
 		}
 		else
 		{
-			return "@RequestTurn@";
+			return "Turn"+Integer.toString(actualTurn);
 		}
 	}
 	
@@ -87,7 +92,7 @@ public class Game
 	 */
 	public String playCard(String player, int cardindex)
 	{
-		if(player == "Player")
+		if(player.equals("Player"))
 		{
 			String tempCard= PlayersHand.get(cardindex).getCardSuit()+Integer.toString(PlayersHand.get(cardindex).getCardNumber());
 			Table.add(PlayersHand.get(cardindex));
@@ -111,7 +116,7 @@ public class Game
 	 */
 	private void dealCards() 
 	{
-		if(roundcounter<=14)
+		if(roundcounter<=17)
 		{
 			if(actualTurn==0)
 			{
@@ -141,22 +146,21 @@ public class Game
 		{
 			for(int i=0; i<2;i++)
 			{
-				Bench1.add(Table.get(0));
+				if(actualTurn == 0) Bench1.add(Table.get(0));
+				else Bench2.add(Table.get(0));
 				Table.remove(0);
 				
 			}
-
-			System.out.println("RoundWinner is "+ players[actualTurn].getUsername());
 		}
 		else if(tempWinner.equals(Table.get(1)))
 		{
 			actualTurn = (actualTurn + 1) % 2;
 			for(int i=0; i<2;i++)
 			{
-				Bench1.add(Table.get(0));
+				if(actualTurn == 0) Bench1.add(Table.get(0));
+				else Bench2.add(Table.get(0));
 				Table.remove(0);
 			}
-			System.out.println("RoundWinner is "+ players[actualTurn].getUsername());
 		}
 		roundcounter++;
 	}
@@ -209,12 +213,9 @@ public class Game
 		{
 			PlayersHand.add(deck.deal());
 			AIsHand.add(deck.deal());
-			GameBoardGUI.setCardIcon(i, PlayersHand.get(i).getCardSuit()+Integer.toString(PlayersHand.get(i).getCardNumber()));
-			GameBoardGUI.setCardIcon(i+3, AIsHand.get(i).getCardSuit()+Integer.toString(AIsHand.get(i).getCardNumber()));
 		}
 			
 		TrumpCard= deck.getTrumpCard();
-		GameBoardGUI.setCardIcon(6, TrumpCard.getCardSuit()+Integer.toString(TrumpCard.getCardNumber()));
 			
 		return "@GameStart@";	
 	}
@@ -223,7 +224,7 @@ public class Game
 	 * Returns the points of the cards contained in Bench1
 	 * @return The points of the bench.
 	 */
-	private int getBench1Points()
+	public int getBench1Points()
 	{
 		int points=0;
 		for(int i=0; i< Bench1.size(); i++)
@@ -256,7 +257,7 @@ public class Game
 	 * Returns the points of the cards contained in Bench2
 	 * @return The points of the bench.
 	 */
-	private int getBench2Points()
+	public int getBench2Points()
 	{
 		int points=0;
 		for(int i=0; i< Bench2.size(); i++)
@@ -294,16 +295,16 @@ public class Game
 		if(this.getBench1Points()>this.getBench2Points())
 		{
 			
-			return "You win!";
+			return "WinPlayer";
 		}
 		else if(this.getBench1Points() == this.getBench2Points())
 		{
 			
-			return "It's a tie!";
+			return "WinNone";
 		}
 		else
 		{
-			return "You lose!";
+			return "WinAI";
 		}
 	}
 
@@ -314,7 +315,7 @@ public class Game
 	 */
 	public String changeHand(String player)
 	{
-		if(ischangeHand(PlayersHand) && (player == "Player"))
+		if(ischangeHand(PlayersHand) && (player.equals("Player")))
 		{
 			ArrayList<Card> tempCards= deck.changeHand(PlayersHand);
 			for(int i=0;i<3;i++)
@@ -324,7 +325,7 @@ public class Game
 			}
 			return "@ChangeHand0@";
 		}
-		else if(ischangeHand(AIsHand) && (player == "AI"))
+		else if(ischangeHand(AIsHand) && (player.equals("AI")))
 		{
 			ArrayList<Card> tempCards= deck.changeHand(AIsHand);
 			for(int i=0;i<3;i++)
@@ -388,7 +389,7 @@ public class Game
 	 */
 	public String changeTrumpCard(String player)
 	{
-		if(ischangeTrumpCard(PlayersHand) && (player == "Player"))
+		if(ischangeTrumpCard(PlayersHand) && (player.equals("Player")))
 		{
 			Card tempCard= PlayersHand.get(changeTrumpIndex);
 			PlayersHand.remove(changeTrumpIndex);
@@ -398,7 +399,7 @@ public class Game
 			
 			return "@TrumpCard0@";
 		}
-		else if(ischangeTrumpCard(AIsHand) && (player == "AI"))
+		else if(ischangeTrumpCard(AIsHand) && (player.equals("AI")))
 		{
 			Card tempCard= AIsHand.get(changeTrumpIndex);
 			AIsHand.remove(changeTrumpIndex);
@@ -423,13 +424,13 @@ public class Game
 	{
 		for(int i=0; i<3; i++)
 		{
-			if(playerhand.get(i).getCardSuit().equals(TrumpCard) && playerhand.get(i).getCardNumber()== 7)
+			if(playerhand.get(i).getCardSuit().equals(TrumpCard.getCardSuit()) && playerhand.get(i).getCardNumber()== 7)
 			{
 				changeTrumpIndex=i;
 				return true;
 			}
 			
-			if(playerhand.get(i).getCardSuit().equals(TrumpCard) && playerhand.get(i).getCardNumber()== 2 && roundcounter== 0)
+			if(playerhand.get(i).getCardSuit().equals(TrumpCard.getCardSuit()) && playerhand.get(i).getCardNumber()== 2 && roundcounter== 0)
 			{
 				changeTrumpIndex=i;
 				return true;
@@ -437,6 +438,64 @@ public class Game
 		}
 		
 		return false;
+	}
+	
+	public String[] getCardNames(String player)
+	{
+		int counter = 0;
+		String[] result = new String[3];
+		if(player.equals("Player")) {
+		try
+		{
+			for(;counter<3;counter++)
+			{
+				result[counter] = PlayersHand.get(counter).getCardSuit() + Integer.toString(PlayersHand.get(counter).getCardNumber());
+			}
+		}catch(Exception E){};
+		}
+		else {
+		try
+		{
+			for(;counter<3;counter++)
+			{
+				result[counter] = AIsHand.get(counter).getCardSuit() + Integer.toString(AIsHand.get(counter).getCardNumber());
+			}
+		}catch(Exception E){};
+		}
+		for(;counter<3;counter++)
+		{
+			result[counter] = "nocard0";
+		}
+		
+		return result;	
+	}
+	
+	public String getTrumpCard()
+	{
+		
+		return TrumpCard.getCardSuit()+Integer.toString(TrumpCard.getCardNumber());
+	}
+	
+	public int AIplay()
+	{
+		AI ai;
+		try
+		{
+			ai = new AI(AIsHand,Table.get(0),TrumpCard.getCardSuit());
+		}catch(Exception e){
+			ai = new AI(AIsHand,null,TrumpCard.getCardSuit());
+		};
+		Card winnerCard = ai.playcard();
+		int result=0;
+		for(int i=0;i<3;i++)
+		{
+			if(AIsHand.get(i).getCardSuit().equals(winnerCard.getCardSuit()) && (AIsHand.get(i).getCardNumber() == winnerCard.getCardNumber()))
+			{
+				result = i;
+				break;
+			}
+		}
+		return result;
 	}
 
 	

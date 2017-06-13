@@ -9,7 +9,7 @@ public class AI {
     public AI(ArrayList<Card> hand, Card tablecard, String trumpcard)
     {
     	ArrayList<Card> temphand = new ArrayList<Card>();
-    	for(int i=0;i<3;i++) temphand.add(hand.get(i));
+    	for(int i=0;i<hand.size();i++) temphand.add(hand.get(i));
         this.hand = temphand;
         this.tablecard = tablecard;
         this.trumpcard = trumpcard;
@@ -106,7 +106,7 @@ public class AI {
         if(number==1) number = 14;
         if(number==3) number = 13;
         number= number*(A*club+B*sword+C*coin+D*cup);
-        System.out.println("Winner is: "+Integer.toString(number));
+       // System.out.println("Winner is: "+Integer.toString(number));
         return number;
     }
     

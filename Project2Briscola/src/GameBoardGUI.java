@@ -40,11 +40,12 @@ public class GameBoardGUI extends JFrame implements ActionListener
 	static JButton changeHand;
 	static JButton nextTurn = new JButton("Next Turn");
 	static JButton cleanTableButton= new JButton("Clean");
-	static JButton showResultButton= new JButton("showResult");
+	static JButton hideAICardsButton = new JButton("Hide AI's Cards");
 	static JLabel playerScore= new JLabel("Player: 0");
-	static JLabel opponentScore= new JLabel("AI: 0");
+	static JLabel opponentScore= new JLabel("Opponent: 0");
+	static JLabel whoWon=new JLabel();
 	static ArrayList<JButton> visualCards= new ArrayList<JButton>();
-	static boolean enableCards= false, enableTrumpChange= true, enableChangeHand=true;
+	static boolean enableCards= false, enableTrumpChange= false, enableChangeHand=false, hideAICards=true;
 	static String displaycard;
 	static int resultOptions=0;
 	
@@ -68,11 +69,7 @@ public class GameBoardGUI extends JFrame implements ActionListener
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                int result= JOptionPane.showConfirmDialog(null, "You sure you want to quit this match?", "Exit Match", JOptionPane.OK_CANCEL_OPTION);
-                if(result==JOptionPane.OK_CANCEL_OPTION)
-                {
-                	GameBoardGUI.this.dispose();
-                }
+                System.exit(0);
             }});
             
         this.setResizable(false);
@@ -113,9 +110,6 @@ public class GameBoardGUI extends JFrame implements ActionListener
         RightPanel.setSize(new Dimension(225, 600));
         RightPanel.setBackground(Color.BLACK);
         
-        //Chat Panel---------------------------------------
-        JPanel ChatPanel = new JPanel();
-       
         
         //Special Rules Button
         changeTrumpCard= new JButton("Change Trump Card");
@@ -155,6 +149,7 @@ public class GameBoardGUI extends JFrame implements ActionListener
         
         nextTurn.setBounds(600,400,100,20);
         nextTurn.setSize(100,20);
+        nextTurn.setEnabled(false);
         this.add(nextTurn);
         
         
@@ -176,6 +171,35 @@ public class GameBoardGUI extends JFrame implements ActionListener
         
         changeHand.setEnabled(settings[1]);
         
+        hideAICardsButton.setBounds(400,260,100,20);
+        hideAICardsButton.setSize(100,20);
+        
+        hideAICardsButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				hideAICards=!hideAICards;
+				String[] newcards = game.getCardNames("AI");
+				if(hideAICards)
+				{
+					for(int i=3;i<6;i++)
+					{
+						visualCards.get(i).setIcon(getCardIcon("card0"));
+					}
+				}
+				else
+				{
+					for(int i=3;i<6;i++)
+					{
+						visualCards.get(i).setIcon(getCardIcon(newcards[i-3]));
+					}
+				}
+				
+				
+			}
+		});
+        hideAICardsButton.setEnabled(false);
+        
         
         //Labels
        
@@ -190,11 +214,19 @@ public class GameBoardGUI extends JFrame implements ActionListener
         this.add(opponentScore);
         
         
+        whoWon.setBounds(350,250,100,50);
+        whoWon.setSize(100, 50);
+        whoWon.setFont(new Font("Rockwell", Font.BOLD, 16));
+        whoWon.setForeground(Color.WHITE);
+       // whoWon.setText("Here I Am");
+        this.add(whoWon);
+        
+        
         //Adding all the Components 
-        RightPanel.add(ChatPanel);
         RightPanel.add(startGame);
         RightPanel.add(changeTrumpCard);
         RightPanel.add(changeHand);
+        RightPanel.add(hideAICardsButton);
         RightPanel.setBounds(800,0,300,600);
         
         this.add(RightPanel);
@@ -266,14 +298,35 @@ public class GameBoardGUI extends JFrame implements ActionListener
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
-				game = new Game(LobbyGUI.P1);
+				game = new Game();
 				game.startGame("Player");
+				whoWon.setText("");
 				String[] newcards = game.getCardNames("Player");
 				for(int i=0;i<3;i++)
 				{
 					visualCards.get(i).setIcon(getCardIcon(newcards[i]));
 				}
+				if(hideAICards)
+				{
+					for(int i=3;i<6;i++)
+					{
+						visualCards.get(i).setIcon(getCardIcon("card0"));
+					}
+				}
+				else
+				{
+					newcards = game.getCardNames("AI");
+					for(int i=3;i<6;i++)
+					{
+						visualCards.get(i).setIcon(getCardIcon(newcards[i-3]));
+					}
+				}
+				
 				visualCards.get(6).setIcon(getCardIcon(game.getTrumpCard()));
+				nextTurn.setEnabled(true);
+				hideAICardsButton.setEnabled(true);
+				enableChangeHand = true;
+				enableTrumpChange = true;
 				runGame();
 			}        	
         });
@@ -300,36 +353,6 @@ public class GameBoardGUI extends JFrame implements ActionListener
         	
         });
         
-        showResultButton.addActionListener(new ActionListener()
-        {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				if(resultflag)
-				{
-					resultflag=false;
-					if(resultOptions==0)
-					{
-						JOptionPane.showMessageDialog(null, "You win the match! :D");
-						dispose();
-						
-					}
-					else if(resultOptions==1)
-					{
-						JOptionPane.showMessageDialog(null, "You lose the match! :(");
-						dispose();
-						
-					}
-					else
-					{
-						JOptionPane.showMessageDialog(null, "It's a tie!!");
-						dispose();
-					}
-				}
-				
-			}
-        	
-        });
        
         changeTrumpCard.addActionListener(new ActionListener()
         {
@@ -376,11 +399,13 @@ public class GameBoardGUI extends JFrame implements ActionListener
         
         //Players' usernames bounds
         southPlayer.setBackground(Color.BLACK);
-        southPlayer.setBounds(530,546,108,12);
+        southPlayer.setBounds(530,546,108,15);
+        southPlayer.setForeground(Color.WHITE);
         
       
         northPlayer.setBackground(Color.BLACK);
-        northPlayer.setBounds(167, 2, 108,12);
+        northPlayer.setBounds(160, 2, 108,15);
+        northPlayer.setForeground(Color.WHITE);
         
         
         
@@ -429,14 +454,30 @@ public class GameBoardGUI extends JFrame implements ActionListener
 			{
 				visualCards.get(i).setIcon(getCardIcon(newcards[i]));
 			}
-			newcards = game.getCardNames("AI");
-			for(int i=3;i<6;i++)
+			if(!hideAICards)
 			{
-				visualCards.get(i).setIcon(getCardIcon(newcards[i-3]));
+				newcards = game.getCardNames("AI");
+				for(int i=3;i<6;i++)
+				{
+					visualCards.get(i).setIcon(getCardIcon(newcards[i-3]));
+				}
 			}
+			
 			turnresult = game.getTurn();
 		}
 		System.out.println(turnresult);
+		if(turnresult.equals("WinAI"))
+		{
+			whoWon.setText("The AI won.");
+		}
+		else if(turnresult.equals("WinNone"))
+		{
+			whoWon.setText("It was a tie.");
+		}
+		else if(turnresult.equals("WinPlayer"))
+		{
+			whoWon.setText("Player won.");
+		}
 		
 	}
 	

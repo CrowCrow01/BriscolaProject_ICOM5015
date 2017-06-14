@@ -1,4 +1,5 @@
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -9,16 +10,18 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
@@ -30,8 +33,7 @@ import javax.swing.JPanel;
 	{
 		public static JButton Create;
 		public static JFrame CreateFrame; 
-		public static Player P1;
-		
+		private boolean[] settings=new boolean[2];
 		/**
 		 * Main Constructor of the class.
 		 */
@@ -41,6 +43,8 @@ import javax.swing.JPanel;
 	        this.setTitle("Briscola");
 	        this.setResizable(false);
 	        this.getContentPane().setLayout(null);
+	        settings[0]=false;
+	        settings[1]=false;
 	       
 	        
 	        //Set frame in the center of screen.
@@ -53,19 +57,7 @@ import javax.swing.JPanel;
 	        this.addWindowListener(new java.awt.event.WindowAdapter() {
 	            @Override
 	            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-	                int result= JOptionPane.showConfirmDialog(null, "You sure you want to quit the game?", "Exit Briscola", JOptionPane.OK_CANCEL_OPTION);
-	                if(result==JOptionPane.OK_CANCEL_OPTION)
-	                {
-	                	System.exit(0);
-	                	/*
-	                	try {
-							GameLoginGUI.client.socket.close();
-							System.exit(0);
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} */
-	                }
+	               System.exit(0);
 	            }
 	        });
 	        
@@ -100,6 +92,12 @@ import javax.swing.JPanel;
 	        TopLeftPanel.setBackground(Color.WHITE);
 	        TopLeftPanel.setSize(950,350);
 	        TopLeftPanel.setBounds(50,50,900,50);
+	        
+	        // MiddlePanel
+	        JPanel MiddlePanel = new JPanel();
+	        MiddlePanel.setLayout(new GridLayout(2,1));
+	        MiddlePanel.setSize(950,200);
+	        MiddlePanel.setBounds(50, 100, 900, 200);
 	       
 	        
 	        //Bottom Left Panel
@@ -123,6 +121,31 @@ import javax.swing.JPanel;
 	        startPanel.setBackground(Color.WHITE);
 	        startPanel.setLayout(new GridLayout(1,3));
 	        startPanel.setBounds(50,450,900,150);
+	        
+	        JCheckBox changeTrumpChoice = new JCheckBox("Allow to change trump card.");
+	        changeTrumpChoice.setBackground(Color.WHITE);
+	        changeTrumpChoice.setSelected(false);
+	        changeTrumpChoice.addItemListener(new ItemListener() {
+				
+				@Override
+				public void itemStateChanged(ItemEvent arg0) {
+					// TODO Auto-generated method stub
+					settings[0]=!settings[0];
+					
+				}
+			});
+	        
+	        JCheckBox changeHandChoice = new JCheckBox("Allow to change hand.");
+	        changeHandChoice.setBackground(Color.WHITE);
+	        changeHandChoice.setSelected(false);
+	        changeHandChoice.addItemListener(new ItemListener() {
+				
+				@Override
+				public void itemStateChanged(ItemEvent e) {
+					// TODO Auto-generated method stub
+					settings[1]=!settings[1];
+				}
+			});
 	     
 	   	        
 	        //Initialization of Lower Panel Components 
@@ -136,19 +159,19 @@ import javax.swing.JPanel;
 
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
-					// TODO Auto-generated method stub
-					boolean[] settings = new boolean[2];
-					settings[0] = true;
-					settings[1] = true;
-					new GameBoardGUI(settings);
 					
+					new GameBoardGUI(settings);
+					setVisible(false);
 				}
 	        	
 	        });
 	        
 	        
 	    
-	        TopLeftPanel.add(PlayerInfoL);
+	        TopLeftPanel.add(PlayerInfoL,BorderLayout.NORTH);
+	        
+	        MiddlePanel.add(changeTrumpChoice);
+	        MiddlePanel.add(changeHandChoice);
 	       	        
 	        
 	        //Adding Components to Lower Panel
@@ -164,16 +187,10 @@ import javax.swing.JPanel;
 
 	        //Adding to Main Panel
 	        this.add(TopLeftPanel);
-	      
+	        this.add(MiddlePanel);
 	        this.add(BottomLeftPanel);
-	        
 	        this.add(startPanel);
-	      
-	        /*this.add(chatboxLB);
-	        this.add(playerlist);
-	        this.add(gamelist); */
 	        
-
 	        
 	        //Lobby Panel components
 	        JButton title= new JButton("Main Menu");
@@ -211,6 +228,7 @@ import javax.swing.JPanel;
 				g.drawImage(i, 0, 0, null);
 			}
 		}
+		
 	    
 	}
 

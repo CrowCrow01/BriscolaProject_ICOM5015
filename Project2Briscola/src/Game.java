@@ -7,7 +7,6 @@ import java.util.ArrayList;
  */
 public class Game 
 {
-	Player[] players= new Player[2];
 	private Card TrumpCard;
 	CardDeck deck;
 	private int actualTurn=0;
@@ -26,10 +25,8 @@ public class Game
 	 * @param name The name of the host.
 	 * @param set Game settings.
 	 */
-	public Game(Player p1)
+	public Game()
 	{
-		players[0]= p1;
-		players[1]= p1; //AI goes here
 		
 		
 		//Initializes Player's Hand
@@ -66,8 +63,7 @@ public class Game
 			{
 				GameBoardGUI.setCardIcon(2, PlayersHand.get(2).getCardSuit()+Integer.toString(PlayersHand.get(2).getCardNumber()));
 			}catch(Exception e){};	
-			//GameBoardGUI.setCardIcon(5, AIsHand.get(2).getCardSuit()+Integer.toString(AIsHand.get(5).getCardNumber()));
-			if(roundcounter<=14)
+			if(roundcounter<=16)
 			{
 				if(actualTurn==0) return "Player won round "+ Integer.toString(roundcounter);
 				else return "AI won round " + Integer.toString(roundcounter);
@@ -80,6 +76,7 @@ public class Game
 		}
 		else
 		{
+			if (roundcounter == 17) GameBoardGUI.visualCards.get(6).setIcon(GameBoardGUI.getCardIcon("nocard0"));
 			return "Turn"+Integer.toString(actualTurn);
 		}
 	}
@@ -422,6 +419,7 @@ public class Game
 	 */
 	public boolean ischangeTrumpCard(ArrayList<Card> playerhand)
 	{
+		if(playerhand.size()<3) return false;
 		for(int i=0; i<3; i++)
 		{
 			if(playerhand.get(i).getCardSuit().equals(TrumpCard.getCardSuit()) && playerhand.get(i).getCardNumber()== 7)

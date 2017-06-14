@@ -65,13 +65,34 @@ public class Game
 			}catch(Exception e){};	
 			if(roundcounter<=16)
 			{
-				if(actualTurn==0) return "Player won round "+ Integer.toString(roundcounter);
-				else return "AI won round " + Integer.toString(roundcounter);
+				
+				if(actualTurn==0) 
+				{
+					GameBoardGUI.gamelog.append("Player won round "+ Integer.toString(roundcounter) + "\n");
+					GameBoardGUI.gamelog.append("----------"+"Round "+Integer.toString(roundcounter+1)+"----------\n");
+					return "Player won round "+ Integer.toString(roundcounter);
+				}
+				else 
+				{
+					GameBoardGUI.gamelog.append("AI won round "+ Integer.toString(roundcounter) + "\n");
+					GameBoardGUI.gamelog.append("----------"+"Round "+Integer.toString(roundcounter+1)+"----------\n");
+					return "AI won round " + Integer.toString(roundcounter);
+				}
 			}
 			else
 			{
-				if(actualTurn==0) return "Player won round "+ Integer.toString(roundcounter) + " (Final Rounds)";
-				else return "AI won round " + Integer.toString(roundcounter) + " (Final Rounds)";
+				if(actualTurn==0) 
+				{
+					GameBoardGUI.gamelog.append("Player won round "+ Integer.toString(roundcounter) + "\n");
+					GameBoardGUI.gamelog.append("----------"+"Round "+Integer.toString(roundcounter+1)+"----------\n");
+					return "Player won round "+ Integer.toString(roundcounter) + " (Final Rounds)";
+				}
+				else 
+				{
+					GameBoardGUI.gamelog.append("AI won round "+ Integer.toString(roundcounter) + "\n");
+					GameBoardGUI.gamelog.append("----------"+"Round "+Integer.toString(roundcounter+1)+"----------\n");
+					return "AI won round " + Integer.toString(roundcounter) + " (Final Rounds)";
+				}
 			}
 		}
 		else
@@ -95,6 +116,7 @@ public class Game
 			Table.add(PlayersHand.get(cardindex));
 			PlayersHand.remove(cardindex);
 			actualTurn = (actualTurn + 1) % 2;
+			GameBoardGUI.gamelog.append("You play "+tempCard + "\n");
 			return tempCard;
 		}
 		else
@@ -103,6 +125,7 @@ public class Game
 			Table.add(AIsHand.get(cardindex));
 			AIsHand.remove(cardindex);
 			actualTurn = (actualTurn + 1) % 2;
+			GameBoardGUI.gamelog.append("AI plays "+tempCard + "\n");
 			return tempCard;
 		}
 		
@@ -213,7 +236,8 @@ public class Game
 		}
 			
 		TrumpCard= deck.getTrumpCard();
-			
+		GameBoardGUI.gamelog.setText("Trump Suit: "+TrumpCard.getCardSuit()+"\n");
+		GameBoardGUI.gamelog.append("----------Round 1----------\n");
 		return "@GameStart@";	
 	}
 	
@@ -320,6 +344,7 @@ public class Game
 				PlayersHand.remove(0);
 				PlayersHand.add(tempCards.get(i));
 			}
+			GameBoardGUI.gamelog.append("You change hand.\n");
 			return "@ChangeHand0@";
 		}
 		else if(ischangeHand(AIsHand) && (player.equals("AI")))
@@ -330,6 +355,7 @@ public class Game
 				AIsHand.remove(0);
 				AIsHand.add(tempCards.get(i));
 			}
+			GameBoardGUI.gamelog.append("AI changes hand.\n");
 			return "@ChangeHand1@";
 		}
 		else
@@ -393,7 +419,7 @@ public class Game
 			PlayersHand.add(TrumpCard);
 			TrumpCard= tempCard;
 			deck.changeTrumpCard(tempCard);
-			
+			GameBoardGUI.gamelog.append("You change trump card.\n New Trump card is: "+TrumpCard.getCardSuit()+Integer.toString(TrumpCard.getCardNumber())+"\n");
 			return "@TrumpCard0@";
 		}
 		else if(ischangeTrumpCard(AIsHand) && (player.equals("AI")))
@@ -403,7 +429,7 @@ public class Game
 			AIsHand.add(TrumpCard);
 			TrumpCard= tempCard;
 			deck.changeTrumpCard(tempCard);
-			
+			GameBoardGUI.gamelog.append("AI changes trump card.\n New Trump card is: "+TrumpCard.getCardSuit()+Integer.toString(TrumpCard.getCardNumber())+"\n");
 			return "@TrumpCard1@";
 		}
 		else

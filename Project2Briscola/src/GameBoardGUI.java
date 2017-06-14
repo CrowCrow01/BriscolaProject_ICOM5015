@@ -21,8 +21,9 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.Timer;
 
 /**
@@ -41,6 +42,7 @@ public class GameBoardGUI extends JFrame implements ActionListener
 	static JButton nextTurn = new JButton("Next Turn");
 	static JButton cleanTableButton= new JButton("Clean");
 	static JButton hideAICardsButton = new JButton("Hide AI's Cards");
+	static JTextArea gamelog = new JTextArea();
 	static JLabel playerScore= new JLabel("Player: 0");
 	static JLabel opponentScore= new JLabel("Opponent: 0");
 	static JLabel whoWon=new JLabel();
@@ -213,12 +215,23 @@ public class GameBoardGUI extends JFrame implements ActionListener
         opponentScore.setFont(new Font("Rockwell", Font.BOLD, 16));
         this.add(opponentScore);
         
+        JLabel gamelogLable = new JLabel("Game Log");
+        gamelogLable.setBackground(Color.GRAY);
+        gamelogLable.setForeground(Color.WHITE);
+        gamelogLable.setBounds(800,180,300,20);
+        this.add(gamelogLable);
+        
+        gamelog.setEditable(false);
+        JScrollPane scroll = new JScrollPane (gamelog, 
+        JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        scroll.setBounds(800,200,300,300);
+        this.add(scroll);
+        
         
         whoWon.setBounds(350,250,100,50);
         whoWon.setSize(100, 50);
         whoWon.setFont(new Font("Rockwell", Font.BOLD, 16));
         whoWon.setForeground(Color.WHITE);
-       // whoWon.setText("Here I Am");
         this.add(whoWon);
         
         

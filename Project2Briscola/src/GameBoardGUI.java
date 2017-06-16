@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
+import javax.swing.AbstractButton;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -60,6 +61,7 @@ public class GameBoardGUI extends JFrame implements ActionListener
 	private int swapCardPos=2;
 	private String turnresult;
 	protected Game game;
+	private JButton changeTrumpCardAI = new JButton();
 	
 	/**
 	 * Main Constructor of the class, initializes the class frame.
@@ -165,7 +167,7 @@ public class GameBoardGUI extends JFrame implements ActionListener
         
         
         changeTrumpCard.setEnabled(settings[0]);
-        
+        changeTrumpCardAI.setEnabled(settings[0]);
         
         changeHand.setBounds(400,240,100,20);
         changeHand.setSize(100,20);
@@ -387,6 +389,37 @@ public class GameBoardGUI extends JFrame implements ActionListener
         	
         });
         
+        changeTrumpCardAI.addActionListener(new ActionListener()
+        {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				if(enableTrumpChange)
+				{
+					System.out.println(game.changeTrumpCard("AI"));
+					String[] newcards = game.getCardNames("AI");
+					if(hideAICards)
+					{
+						for(int i=3;i<6;i++)
+						{
+							visualCards.get(i).setIcon(getCardIcon("card0"));
+						}
+					}
+					else
+					{
+						newcards = game.getCardNames("AI");
+						for(int i=3;i<6;i++)
+						{
+							visualCards.get(i).setIcon(getCardIcon(newcards[i-3]));
+						}
+					}
+					visualCards.get(6).setIcon(getCardIcon(game.getTrumpCard()));
+				}
+			}
+        	
+        });
+        
         changeHand.addActionListener(new ActionListener()
         {
 
@@ -441,6 +474,7 @@ public class GameBoardGUI extends JFrame implements ActionListener
 			}
 			else if(turnresult.equals("Turn1"))
 			{
+				changeTrumpCardAI.doClick();
 				int cardindex = game.AIplay();
 				displaycard= game.playCard("AI",cardindex);
 				moveNorthCard();

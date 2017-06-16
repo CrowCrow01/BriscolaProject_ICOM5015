@@ -37,28 +37,19 @@ public class AI {
         else
         {
         	Card chosenCard = hand.get(0);
-            boolean loop = true;
-            while(loop) {
-            chosenCard = hand.get(0);
-            int count=0;
             try
             {
                 if(!(this.comparegreater(chosenCard,hand.get(1)).equals(chosenCard)))
                 {
-                	count = 1;
                     chosenCard = hand.get(1);
                 }
                 if(!(this.comparegreater(chosenCard,hand.get(2)).equals(chosenCard)))
                 {
-                	count=2;
                     chosenCard = hand.get(2);
                 }
                 
             }
             catch(Exception E){};
-            if(this.cardWinner(tablecard,chosenCard).equals(chosenCard)) loop = false;
-            else { if (hand.size() == 1) loop = false; else hand.remove(count); }
-            }
             return chosenCard;
         }        
     }
@@ -85,6 +76,7 @@ public class AI {
  
     private int getValue(Card card) {
         String suit = card.getCardSuit();
+        int winsTurn = 1;
         int A=0,B=0,C=0,D=0,club=1,sword=1,coin=1,cup=1;
         if(trumpcard.equals("club")) club = 10;
         if(trumpcard.equals("sword")) sword = 10;
@@ -105,7 +97,8 @@ public class AI {
         int number = card.getCardNumber();
         if(number==1) number = 14;
         if(number==3) number = 13;
-        number= number*(A*club+B*sword+C*coin+D*cup);
+        if(tablecard != null && !cardWinner(tablecard,card).equals(card)) winsTurn = -1;
+        number= winsTurn*(number*(A*club+B*sword+C*coin+D*cup));
        // System.out.println("Winner is: "+Integer.toString(number));
         return number;
     }

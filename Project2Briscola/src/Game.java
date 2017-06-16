@@ -81,6 +81,7 @@ public class Game
 			}
 			else
 			{
+				GameBoardGUI.enableTrumpChange = false;
 				if(actualTurn==0) 
 				{
 					GameBoardGUI.gamelog.append("Player won round "+ Integer.toString(roundcounter) + "\n");

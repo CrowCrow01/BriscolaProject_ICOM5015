@@ -9,6 +9,11 @@ public class AITester {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
+		
+		//***********Firts Part***********************
+		//***********AI vs AI*************************
+		
+		System.out.println("Testing: Part I");
 		ArrayList<Card> playerhand1= new ArrayList<Card>();
 		ArrayList<Card> playerhand2= new ArrayList<Card>();
 		String trumpcard = "coin";
@@ -23,87 +28,93 @@ public class AITester {
 		playerhand2.add(new Card(9,"sword"));
 		playerhand2.add(new Card(8,"club"));
 		
+		//Initializing AI1
 		AI player1 = new AI(playerhand1,tablecard,trumpcard);
-		
+		//AI1 plays a card. Card is on table now.
 		tablecard = player1.playcard();
 		
 		System.out.println("Player 1 played: "+tablecard.getCardSuit()+" "+tablecard.getCardNumber()+"\n");
-		
+		//Initializing AI2
 		AI player2 = new AI(playerhand2,tablecard,trumpcard);
-		
+		//AI2 plays its card.
 		Card play2 = player2.playcard();
 		
 		System.out.println("Player 2 played: "+play2.getCardSuit()+" "+play2.getCardNumber());
 		
+		
+		//**************Second Part*********************************************
 		//**************Test cases**********************************************
+		
+		
 		System.out.println("\n\n");
+		System.out.println("Testing: Part II");
 		trumpcard="coin";
 		
 		//***Test 1: Trump card on table. User has no trump cards to beat it
-		System.out.println("Test 1: Trump card on table. User has no trump cards to beat it");
-		
-		playerhand2.removeAll(playerhand2);
-		playerhand2.add(new Card(10,"sword"));
-		playerhand2.add(new Card(9,"sword"));
-		playerhand2.add(new Card(8,"club"));
-		
-		tablecard=new Card(7,"coin");
-		
-		
-		player2 = new AI(playerhand2,tablecard,trumpcard);
-		
-		System.out.println("Card on table: "+tablecard.getCardSuit()+" "+tablecard.getCardNumber());
-		
-		System.out.println("Players hand: "+playerhand2.get(0).getCardSuit()+" "+playerhand2.get(0).getCardNumber()+
-				", "+playerhand2.get(1).getCardSuit()+" "+playerhand2.get(1).getCardNumber()+
-				", "+playerhand2.get(2).getCardSuit()+" "+playerhand2.get(2).getCardNumber());
-		
-		play2 = player2.playcard();
-		
-		System.out.println("Player 2 played: "+play2.getCardSuit()+" "+play2.getCardNumber()+"\n\n");	
+				System.out.println("Test 1: Trump card on table. User has no trump cards to beat it");
+				
+				playerhand2.removeAll(playerhand2);
+				playerhand2.add(new Card(10,"sword"));
+				playerhand2.add(new Card(9,"sword"));
+				playerhand2.add(new Card(8,"club"));
+				
+				tablecard=new Card(7,"coin");
+				
+				
+				player2 = new AI(playerhand2,tablecard,trumpcard);
+				
+				System.out.println("Card on table: "+tablecard.getCardSuit()+" "+tablecard.getCardNumber());
+				
+				System.out.println("Players hand: "+playerhand2.get(0).getCardSuit()+" "+playerhand2.get(0).getCardNumber()+
+						", "+playerhand2.get(1).getCardSuit()+" "+playerhand2.get(1).getCardNumber()+
+						", "+playerhand2.get(2).getCardSuit()+" "+playerhand2.get(2).getCardNumber());
+				
+				play2 = player2.playcard();
+				
+				System.out.println("Player 2 played: "+play2.getCardSuit()+" "+play2.getCardNumber()+"\n\n");	
 		
 		
 		//***Test 2: Trump card in table. User can beat it.
-		System.out.println("Trump card in table. User can beat it.");
-		playerhand2.removeAll(playerhand2);
-		playerhand2.add(new Card(10,"club"));
-		playerhand2.add(new Card(9,"cup"));
-		playerhand2.add(new Card(8,"coin"));
-		
-		tablecard=new Card(7,"coin");
-		
-		System.out.println("Card on table: "+tablecard.getCardSuit()+" "+tablecard.getCardNumber());
-		
-		System.out.println("Players hand: "+playerhand2.get(0).getCardSuit()+" "+playerhand2.get(0).getCardNumber()+
-				", "+playerhand2.get(1).getCardSuit()+" "+playerhand2.get(1).getCardNumber()+
-				", "+playerhand2.get(2).getCardSuit()+" "+playerhand2.get(2).getCardNumber());
-		
-		player2 = new AI(playerhand2,tablecard,trumpcard);
-		
-		play2 = player2.playcard();
-		
-		System.out.println("Player 2 played: "+play2.getCardSuit()+" "+play2.getCardNumber()+"\n\n");	
+				System.out.println("Trump card in table. User can beat it.");
+				playerhand2.removeAll(playerhand2);
+				playerhand2.add(new Card(10,"club"));
+				playerhand2.add(new Card(9,"cup"));
+				playerhand2.add(new Card(8,"coin"));
+				
+				tablecard=new Card(7,"coin");
+				
+				System.out.println("Card on table: "+tablecard.getCardSuit()+" "+tablecard.getCardNumber());
+				
+				System.out.println("Players hand: "+playerhand2.get(0).getCardSuit()+" "+playerhand2.get(0).getCardNumber()+
+						", "+playerhand2.get(1).getCardSuit()+" "+playerhand2.get(1).getCardNumber()+
+						", "+playerhand2.get(2).getCardSuit()+" "+playerhand2.get(2).getCardNumber());
+				
+				player2 = new AI(playerhand2,tablecard,trumpcard);
+				
+				play2 = player2.playcard();
+				
+				System.out.println("Player 2 played: "+play2.getCardSuit()+" "+play2.getCardNumber()+"\n\n");	
 		
 		
 		//***Test 3: Trump card in table. All 3 cards can beat it.
-		System.out.println("Trump card in table. All 3 cards can beat it.");
-		playerhand2.removeAll(playerhand2);
-		playerhand2.add(new Card(10,"coin"));
-		playerhand2.add(new Card(9,"coin"));
-		playerhand2.add(new Card(8,"coin"));
-		
-		tablecard=new Card(7,"coin");
-		
-		System.out.println("Card on table: "+tablecard.getCardSuit()+" "+tablecard.getCardNumber());
-		System.out.println("Players hand: "+playerhand2.get(0).getCardSuit()+" "+playerhand2.get(0).getCardNumber()+
-				", "+playerhand2.get(1).getCardSuit()+" "+playerhand2.get(1).getCardNumber()+
-				", "+playerhand2.get(2).getCardSuit()+" "+playerhand2.get(2).getCardNumber());
-		
-		player2 = new AI(playerhand2,tablecard,trumpcard);
-		
-		play2 = player2.playcard();
-		
-		System.out.println("Player 2 played: "+play2.getCardSuit()+" "+play2.getCardNumber()+"\n\n");	
+				System.out.println("Trump card in table. All 3 cards can beat it.");
+				playerhand2.removeAll(playerhand2);
+				playerhand2.add(new Card(10,"coin"));
+				playerhand2.add(new Card(9,"coin"));
+				playerhand2.add(new Card(8,"coin"));
+				
+				tablecard=new Card(7,"coin");
+				
+				System.out.println("Card on table: "+tablecard.getCardSuit()+" "+tablecard.getCardNumber());
+				System.out.println("Players hand: "+playerhand2.get(0).getCardSuit()+" "+playerhand2.get(0).getCardNumber()+
+						", "+playerhand2.get(1).getCardSuit()+" "+playerhand2.get(1).getCardNumber()+
+						", "+playerhand2.get(2).getCardSuit()+" "+playerhand2.get(2).getCardNumber());
+				
+				player2 = new AI(playerhand2,tablecard,trumpcard);
+				
+				play2 = player2.playcard();
+				
+				System.out.println("Player 2 played: "+play2.getCardSuit()+" "+play2.getCardNumber()+"\n\n");	
 		
 		
 		//***Test 4: Trump card in table. User has trump but can't beat it. All are trump
@@ -382,8 +393,8 @@ public class AITester {
 				
 				System.out.println("Player 2 played: "+play2.getCardSuit()+" "+play2.getCardNumber()+"\n\n");	
 		
-		
-
+		//********End of Test Cases**************
+				
 	}
 
 }
